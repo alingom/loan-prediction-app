@@ -11,10 +11,10 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 import pickle
 
-# lire la base de données
+# Read the dataset
 df = pd.read_csv('loan.csv')
 
-# Renseigner les valeurs manquantes
+# Fill in the missing values
 cat_data = []
 num_data = []
 for i,c in enumerate(df.dtypes):
@@ -25,54 +25,54 @@ for i,c in enumerate(df.dtypes):
 cat_data = pd.DataFrame(cat_data).transpose()
 num_data = pd.DataFrame(num_data).transpose()
 
-# Pour les variables catégoriques on va remplaczr les valeurs manquantes par les valeurs qui se repetent le plus
+# For categorical variables, we will replace missing values with the values that occur most frequently.
 cat_data = cat_data.apply(lambda x: x.fillna(x.value_counts().index[0]))
 print(cat_data.isnull().sum().any())
 
-# Pour les variables numériques on va remplacer les valeurs manquantes par la valeur précedente de la meme colonne
+# For numerical variables, we will replace missing values with the previous value in the same column.
 num_data.fillna(method='bfill', inplace=True)
 print(num_data.isnull().sum().any())
 
-# Tranformer la colonne target
+# Transform the target column 'Loan_Status' into 0 and 1
 target_value = {'Y': 1, 'N': 0}
 target = cat_data['Loan_Status']
 cat_data.drop('Loan_Status', axis=1, inplace=True)
 target = target.map(target_value)
 print(target)
 
-# Remplacer les valeurs catégoriques par des valeurs numérique 0,1,2...
+# Replace categorical values with numerical values 0, 1, 2...
 le = LabelEncoder()
 for i in cat_data:
   cat_data[i] = le.fit_transform(cat_data[i])
 print(cat_data)
 
-# Supprimer loan_id
+# Remove loan_id column
 cat_data.drop('Loan_ID', axis=1, inplace=True)
 
-# Concatener cat_data et num_data et spécifier la colonne target
+# Concatenate cat_data and num_data and specify the target column
 X = pd.concat([cat_data,num_data], axis=1)
 y = target
 print(y)
 
-# Diviser la base de données en une base de données test et d'entrainement
+# Divide the database into a test set and a training set
 sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 for train, test in sss.split(X,y):
   X_train, X_test = X.iloc[train], X.iloc[test]
   y_train, y_test = y.iloc[train], y.iloc[test]
 
-print('X_train taille: ', X_train.shape)
-print('X_test taille: ', X_test.shape)
-print('y_train taille: ', y_train.shape)
-print('y_test taille: ', y_test.shape)
+print('X_train size: ', X_train.shape)
+print('X_test size: ', X_test.shape)
+print('y_train size: ', y_train.shape)
+print('y_test size: ', y_test.shape)
 
-# On va appliquer tois algorithmes Logisitic Regression, KNN, DecisionTree
+# We will apply three algorithms: Logistic Regression, KNN, and Decision Tree
 models = {
     'LogisticRegression': LogisticRegression(random_state=42),
     'KNeighborsClassifier': KNeighborsClassifier(),
     'DecisionTreeClassifier': DecisionTreeClassifier(max_depth=1, random_state=42)
 }
 
-# La fonction de précision
+# The accuracy function
 def accu(y_true, y_pred, retu=False):
   acc = accuracy_score(y_true,y_pred)
   if retu:
@@ -80,7 +80,7 @@ def accu(y_true, y_pred, retu=False):
   else:
     print(f'la precision du modèle est: {acc}')
 
-# c'est la fonction d'application des modèles
+# Model application function
 def train_test_eval(models, X_train, y_train, X_test, y_test):
   for name, model in models.items():
     print(name, ':')
@@ -92,7 +92,7 @@ train_test_eval(models, X_train, y_train, X_test, y_test)
 
 X_2 = X[['Gender', 'Married', 'Education', 'CoapplicantIncome', 'Credit_History']]
 
-# Diviser la base de données en une base de données test et d'entrainement
+# Divide the database into a new test set and a training set
 sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 for train, test in sss.split(X_2,y):
   X_train, X_test = X_2.iloc[train], X_2.iloc[test]
@@ -105,9 +105,9 @@ print('y_test taille: ', y_test.shape)
 
 train_test_eval(models, X_train, y_train, X_test, y_test)
 
-# Appliquer la regression logisitique sur notre base de donnée
+# Apply logistic regression to our database
 classifier = LogisticRegression()
-classifier.fit(X_2,y)
+classifier.fit(X_2, y)
 
 # Saving model to disk
 pickle.dump(classifier, open('model.pkl', 'wb'))

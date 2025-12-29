@@ -1,18 +1,95 @@
-## ML-Model-Flask-Deployment
-This is a demo project to elaborate how Machine Learn Models are deployed on production using Flask API
+### Problem Definition
 
-### Prerequisites
-You must have Scikit Learn, Pandas (for Machine Leraning Model) and Flask (for API) installed.
+The loan prediction problem consists of building a supervised machine learning model that predicts whether a loan application should be **approved or rejected** based on an applicant's demographic, financial, and loan-related attributes.
+Formally, it is a **binary classification problem**, where the target variable indicates loan approval status (Loan_Status: Yes/No).
+
+
+### Motivation (African Context)
+
+In many African countries, financial institutions face challenges such as:
+
+- Limited access to credit for individuals and small businesses
+
+- High default risk due to informal income sources
+
+- Manual and subjective loan approval processes
+
+An automated loan prediction system helps:
+
+- Improve financial inclusion by enabling fairer credit decisions
+
+- Reduce human bias and operational costs
+
+- Support microfinance institutions and banks in making data-driven lending decisions, especially in underbanked populations
+
+Such models are particularly valuable in African contexts where credit history data may be scarce and alternative features must be leveraged effectively.
+
+
+### Dataset Description
+
+The dataset contains information about loan applicants and their loan approval outcomes. It includes **demographic, financial, and loan-specific features.**
+
+Key characteristics:
+
+- **Source:** Kaggle – Loan Prediction Problem Dataset
+
+- **Target variable:** Loan_Status (Approved / Not Approved)
+
+- **Feature types:**
+
+    - Demographic: Gender, Marital Status, Education, Dependents
+
+    - Financial: ApplicantIncome, CoapplicantIncome, Credit_History
+
+    - Loan-related: LoanAmount, Loan_Amount_Term, Property_Area
+
+The dataset includes both **categorical and numerical variables**, requiring preprocessing steps such as encoding and missing value handling.
+
+
+### Proposed Method
+
+The proposed approach follows a standard machine learning pipeline:
+
+1. **Data preprocessing**
+
+    - Handling missing values
+
+    - Encoding categorical variables
+
+    - Feature scaling (if required)
+
+2. **Exploratory Data Analysis (EDA)**
+
+    - Understanding feature distributions
+
+    - Identifying relationships between features and loan approval
+
+3. **Model training**
+
+    - Applying classification algorithms such as Logistic Regression, Decision Trees, or Random Forests
+
+    - Training on historical loan data
+
+4. **Model evaluation**
+
+    - Using metrics such as accuracy, precision, recall, and confusion matrix
+
+5. **Fairness Analysis and Tests**
+
+    - Analyzing model predictions across sensitive attributes such as gender and marital status and by identifying potential biases in approval outcomes 
+
+The final model is used to predict loan approval outcomes for new applicants based on learned patterns in the data.
+
 
 ### Project Structure
-This project has four major parts :
-1. model.py - This contains code fot our Machine Learning model to predict employee salaries absed on trainign data in 'hiring.csv' file.
+This project has three major parts :
+1. model.py - This contains code for our Machine Learning model to predict employee salaries absed on trainign data in 'hiring.csv' file.
 2. app.py - This contains Flask APIs that receives employee details through GUI or API calls, computes the precited value based on our model and returns it.
-3. request.py - This uses requests module to call APIs already defined in app.py and dispalys the returned value.
-4. templates - This folder contains the HTML template to allow user to enter employee detail and displays the predicted employee salary.
+3. templates - This folder contains the HTML template to allow user to enter loan detail and displays the predicted loan.
+
 
 ### Running the project
-1. Ensure that you are in the project home directory. Create the machine learning model by running below command -
+1. Create the machine learning model by running below command -
 ```
 python model.py
 ```
@@ -24,18 +101,10 @@ python app.py
 ```
 By default, flask will run on port 5000.
 
-3. Navigate to URL http://localhost:5000
+Or Run streamlit_app.py using below command to start Streamlit App
 
-You should be able to view the homepage as below :
-![alt text](http://www.thepythonblog.com/wp-content/uploads/2019/02/Homepage.png)
-
-Enter valid numerical values in all 3 input boxes and hit Predict.
-
-If everything goes well, you should  be able to see the predcited salary vaule on the HTML page!
-![alt text](http://www.thepythonblog.com/wp-content/uploads/2019/02/Result.png)
-
-4. You can also send direct POST requests to FLask API using Python's inbuilt request module
-Run the beow command to send the request with some pre-popuated values -
 ```
-python request.py
+streamlit run streamlit_app.py
 ```
+
+3. Navigate to URL http://localhost:5000 for Flask API or http://localhost:8501 for Streamlit App
